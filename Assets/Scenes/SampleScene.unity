@@ -151,10 +151,15 @@ MonoBehaviour:
   global: 1
   planetTransform: {fileID: 523390489}
   gm: 20
+  r0: 0
+  r1: 0
+  r2: 0
+  r3: 0
+  r4: 0
   rotation: 323
   drive: 106
   fasterDrive: 107
-  mainCamera: {fileID: 0}
+  mainCamera: {fileID: 519420031}
 --- !u!4 &24030997
 Transform:
   m_ObjectHideFlags: 0
@@ -604,7 +609,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a077d4c22750459c957e908f0e5bf2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ratio: 0
+  ratio: 0.1
   target: {fileID: 1117286834}
   Height: -10
 --- !u!1 &523390488
@@ -1469,6 +1474,7 @@ MonoBehaviour:
   drivingCostPerSec: 0
   fasterDrivingCostPerSec: 0
   rotationCostPerSec: 0
+  energyLimit: 0
 --- !u!1 &1117783241
 GameObject:
   m_ObjectHideFlags: 0

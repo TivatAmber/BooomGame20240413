@@ -4,21 +4,21 @@ using UnityEngine;
 
 public class CameraMove : MonoBehaviour
 {
-    [SerializeField] [Range(0.1f, 0.8f)] private float ratio;
+    [SerializeField] [Range(0f, 1f)] private float rotationRatio;
+    [SerializeField] [Range(0f, 1f)] private float transformRatio;
     [SerializeField] private Entity target;
-    [Range(-5, -15)]
-    [SerializeField] private float Height;
+    [SerializeField] [Range(-5, -15)] private float Height;
 
     private void ChangeTransform()
     {
         Vector3 pos = target.transform.position;
         pos.z = Height;
-        transform.position = pos;
+        transform.position = Vector3.Lerp(transform.position, pos, transformRatio);
     }
 
     private void ChangeRotation()
     {
-        Vector3 targetForward = target.NowSpeed.normalized;
+        Vector3 targetForward = target.transform.right;
         // Vector3 targetUp = Vector3.Cross(Vector3.forward, targetForward);
         // Debug.DrawLine(target.transform.position, target.transform.position + targetUp, Color.red);
         Vector3 nowForward = transform.right;
@@ -30,7 +30,7 @@ public class CameraMove : MonoBehaviour
         Vector3 targetUp = Vector3.Cross(Vector3.forward, targetForward);
         float deg = Mathf.Sign(Vector3.Dot(targetUp, nowForward));
         deg *= Vector3.Angle(nowForward, targetForward);
-        transform.Rotate(0, 0, -deg * ratio);
+        transform.Rotate(0, 0, -deg * rotationRatio);
     }
     private void Start()
     {

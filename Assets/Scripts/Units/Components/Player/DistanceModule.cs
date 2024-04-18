@@ -6,7 +6,7 @@ public class DistanceModule
 {
     public void Update(Player entity)
     {
-        float distance = (entity.transform.position - Global.Instance.PlanetTransform.position).magnitude;
+        float distance = (entity.transform.position - Global.Planet.PlanetTransform.position).magnitude;
         float deltaEnergy;
         if (distance < Global.Energy.R0)
         {

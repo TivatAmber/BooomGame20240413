@@ -11,8 +11,30 @@ namespace Mangers
         [SerializeField] private Transform planetTransform;
 
         [SerializeField] private float gm;
-        
-        public Transform PlanetTransform => planetTransform;
+        [SerializeField] private float inverseGm;
+        [SerializeField] private float maxInverseGm;
+        [SerializeField] private float dragRatio;
+        [SerializeField] private float dragConstant;
+
+        public static class Planet
+        {
+            public static Transform PlanetTransform => Instance.planetTransform;
+            public static float DragRatio => Instance.dragRatio;
+            public static float DragConstant => Instance.dragConstant;
+        }
+        public float GravityFunc(Entity entity)
+        {
+            float distance = (entity.transform.position - planetTransform.position).magnitude;
+            if (distance < r0) return - Mathf.Min(inverseGm / (distance * distance), maxInverseGm);
+            return gm / (distance * distance);
+        }
+
+        public Vector3 GetCircularVelocity(Entity entity)
+        {
+            Vector3 vec = planetTransform.transform.position - entity.transform.position;
+            Vector3 forward = Vector3.Cross(vec.normalized, Vector3.forward);
+            return forward * Mathf.Sqrt(gm / vec.magnitude);
+        }
         #endregion
 
         #region EnergyConfigure
@@ -60,18 +82,6 @@ namespace Mangers
         {
             _entityManager = new EntityManager();
             if (mainCamera == null) mainCamera = Camera.main;
-        }
-
-        public float GravityFunc(Entity entity)
-        {
-            return Mathf.Min(gm / entity.transform.position.sqrMagnitude, gm / 1);
-        }
-
-        public Vector3 GetCircularVelocity(Entity entity)
-        {
-            Vector3 vec = planetTransform.transform.position - entity.transform.position;
-            Vector3 forward = Vector3.Cross(vec.normalized, Vector3.forward);
-            return forward * Mathf.Sqrt(gm / vec.magnitude);
         }
     }
 }

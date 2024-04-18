@@ -57,7 +57,7 @@ namespace Units.Components
             }
             
             // Debug
-            Debug.DrawLine(entity.transform.position, Global.Instance.PlanetTransform.position);
+            Debug.DrawLine(entity.transform.position, Global.Planet.PlanetTransform.position);
         }
 
         private void ChangeRotation(Player entity)

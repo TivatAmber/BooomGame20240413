@@ -46,7 +46,13 @@ namespace Units.Components.Enemies
                     GlobalConfigure.Manager.EnemyEntity
                         .Add(Watcher.Create(entity.transform.position
                             + forward * _distance));
-                } // TODO
+                } 
+                else if (_prefab.TryGetComponent<Destroyer>(out _))
+                {
+                    GlobalConfigure.Manager.EnemyEntity
+                        .Add(Destroyer.Create(entity.transform.position
+                            + forward * _distance));
+                }
             }
         }
     }

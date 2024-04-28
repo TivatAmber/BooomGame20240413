@@ -34,8 +34,10 @@ public class DistanceModule
         }
 
         deltaEnergy *= Time.deltaTime;
-        if (deltaEnergy + entity.energy > 0 && deltaEnergy + entity.energy < entity.energyLimit)
-            entity.energy += deltaEnergy;
+        if (deltaEnergy + entity.energy > 0)
+        {
+            entity.energy = Mathf.Min(entity.energyLimit, entity.energy + deltaEnergy);
+        }
     }
 
     float GetR0Energy(float distance)

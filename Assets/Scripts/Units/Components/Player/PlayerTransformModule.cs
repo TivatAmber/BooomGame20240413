@@ -50,6 +50,7 @@ namespace Units.Components
                     if (entity.NowSpeed.magnitude < entity.fasterDrivingMaxSpeed)
                     {
                         entity.NowForce += _forward * entity.fasterDrivingForce;
+                        entity.energy -= entity.fasterDrivingCostPerSec * Time.deltaTime;
                     }
                 } 
                 else if (entity.DriveOrder && entity.energy >= entity.drivingCostPerSec * Time.deltaTime)
@@ -57,6 +58,7 @@ namespace Units.Components
                     if (entity.NowSpeed.magnitude < entity.maxSpeed)
                     {
                         entity.NowForce += _forward * entity.drivingForce;
+                        entity.energy -= entity.drivingCostPerSec * Time.deltaTime;
                     }
                 }
                 ChangeTransform(entity);

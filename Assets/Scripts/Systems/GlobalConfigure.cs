@@ -29,7 +29,7 @@ namespace GlobalSystem
         private void Update()
         {
             if (_nowCollectorInterval < _collectorInterval) _nowCollectorInterval += Time.deltaTime;
-            if (_nowOccultatorInterval < _nowOccultatorInterval) _nowOccultatorInterval += Time.deltaTime;
+            if (_nowOccultatorInterval < _occulatorInterval) _nowOccultatorInterval += Time.deltaTime;
             #region Debug
             // Debug.Log(_entityManager.ViewEntity.Count);
             #endregion
@@ -194,6 +194,10 @@ namespace GlobalSystem
         [SerializeField] private bool watcherCanBroadcast;
         [SerializeField] private float watcherBroadcastRadius;
         #endregion
+        #region DestroyerConfigure
+        [SerializeField] private GameObject destroyerPrefab;
+        // TODO
+        #endregion
         #region Prefabs
         [Header("EnemiesPools")]
         [SerializeField] private Transform enemiesPool;
@@ -202,6 +206,7 @@ namespace GlobalSystem
             public static Transform EnemiesPool => Instance.enemiesPool;
             public static GameObject CollectorPrefab => Instance.collectorPrefab;
             public static GameObject WatcherPrefab => Instance.watcherPrefab;
+            public static GameObject DestroyerPrefab => Instance.destroyerPrefab;
         }
         #endregion
         public static class Enemies
@@ -242,6 +247,12 @@ namespace GlobalSystem
                 public static float SelfDestructDamage => Instance.watcherSelfDestructDamage;
                 public static bool CanBroadcast => Instance.watcherCanBroadcast;
                 public static float BroadcastRadius => Instance.watcherBroadcastRadius;
+            }
+            #endregion
+            #region Destroyer
+            public static class Destroyer
+            {
+                // TODO
             }
             #endregion
         }

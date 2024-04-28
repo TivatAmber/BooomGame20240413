@@ -47,14 +47,14 @@ namespace Units.Components
             {
                 if (entity.FasterDriveOrder && entity.energy >= entity.fasterDrivingCostPerSec * Time.deltaTime)
                 {
-                    if (entity.NowSpeed.magnitude > entity.fasterDrivingMaxSpeed)
+                    if (entity.NowSpeed.magnitude < entity.fasterDrivingMaxSpeed)
                     {
                         entity.NowForce += _forward * entity.fasterDrivingForce;
                     }
                 } 
                 else if (entity.DriveOrder && entity.energy >= entity.drivingCostPerSec * Time.deltaTime)
                 {
-                    if (entity.NowSpeed.magnitude > entity.maxSpeed)
+                    if (entity.NowSpeed.magnitude < entity.maxSpeed)
                     {
                         entity.NowForce += _forward * entity.drivingForce;
                     }

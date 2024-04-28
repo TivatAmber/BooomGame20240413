@@ -1,5 +1,4 @@
-using Mangers;
-using Unity.VisualScripting.FullSerializer;
+using GlobalSystem;
 using UnityEngine;
 
 namespace Units.Components
@@ -9,8 +8,9 @@ namespace Units.Components
         private Transform _entityTransform;
         private Vector3 _mousePosition;
         private Vector3 _forward;
-        public PlayerTransformModule(Entity entity) : base(entity)
+        public override void Init(Entity entity)
         {
+            base.Init(entity);
             entity.NowSpeed = -entity.NowSpeed;
         }
 
@@ -30,7 +30,7 @@ namespace Units.Components
         private void CalcCache(Player entity)
         {
             _entityTransform = entity.transform;
-            _mousePosition = Global.Instance.MainCamera.ScreenToWorldPoint(Input.mousePosition);
+            _mousePosition = GlobalConfigure.Instance.MainCamera.ScreenToWorldPoint(Input.mousePosition);
             _mousePosition.Set(_mousePosition.x, _mousePosition.y, _entityTransform.position.z);
             _forward = (_mousePosition - _entityTransform.position).normalized;
         }
@@ -39,27 +39,44 @@ namespace Units.Components
             CalcCache(entity);
             
             // Rotate
-            if(entity.RotationOrder) ChangeRotation(entity);
-            else if (entity.canChangeRotationByPlanet) ChangeRotationByPlanet(entity);
+            if (entity.RotationOrder) ChangeRotation(entity);
+            else if (entity.canChangeRotationByPlanet) PlayerChangeRotationByPlanet(entity);
             
             // Transform
             if (entity.CanChangeTransform)
             {
                 if (entity.FasterDriveOrder && entity.energy >= entity.fasterDrivingCostPerSec * Time.deltaTime)
                 {
-                    entity.NowForce += _forward * entity.fasterDrivingForce;
+                    if (entity.NowSpeed.magnitude > entity.fasterDrivingMaxSpeed)
+                    {
+                        entity.NowForce += _forward * entity.fasterDrivingForce;
+                    }
                 } 
                 else if (entity.DriveOrder && entity.energy >= entity.drivingCostPerSec * Time.deltaTime)
                 {
-                    entity.NowForce += _forward * entity.drivingForce;
+                    if (entity.NowSpeed.magnitude > entity.maxSpeed)
+                    {
+                        entity.NowForce += _forward * entity.drivingForce;
+                    }
                 }
                 ChangeTransform(entity);
             }
             
             // Debug
-            Debug.DrawLine(entity.transform.position, Global.Planet.PlanetTransform.position);
+            Debug.DrawLine(entity.transform.position, GlobalConfigure.Planet.PlanetTransform.position);
         }
-
+        protected void PlayerChangeRotationByPlanet(Entity entity)
+        {
+            Vector3 relativePosition = (entity.transform.position - GlobalConfigure.Planet.PlanetTransform.position)
+                .normalized;
+            float delta = Vector3.SignedAngle(entity.transform.up, relativePosition, Vector3.forward);
+            entity.transform.Rotate(0, 0, delta);
+            // float degree = Tools.GetAngleByDeg(relativePosition, GlobalConfigure.Planet.PlanetTransform.up);
+            // bool flag = Vector3.Dot(relativePosition, GlobalConfigure.Planet.PlanetTransform.right) >= 0;
+            // float lstRotation = entity.transform.rotation.eulerAngles.z;
+            // degree = flag ? 360 - degree : degree;
+            // entity.transform.Rotate(0, 0,  degree - lstRotation);
+        }
         private void ChangeRotation(Player entity)
         {
             if (entity.canChangeRotationByPlanet)
@@ -75,8 +92,8 @@ namespace Units.Components
             {
                 speed *= entity.slowRotationSpeed;
             }
-            
-            entity.transform.Rotate(0, 0, speed * Time.deltaTime);
+            float maxAngle = Vector3.SignedAngle(_entityTransform.right, _forward, Vector3.forward);
+            entity.transform.Rotate(0, 0, Tools.GetCloseToZero(speed * Time.deltaTime, maxAngle));
         }
     }
 }

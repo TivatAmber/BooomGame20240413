@@ -19,13 +19,7 @@ public class CameraMove : MonoBehaviour
     private void ChangeRotation()
     {
         Vector3 targetForward = target.transform.right;
-        // Vector3 targetUp = Vector3.Cross(Vector3.forward, targetForward);
-        // Debug.DrawLine(target.transform.position, target.transform.position + targetUp, Color.red);
         Vector3 nowForward = transform.right;
-        // float deg = Mathf.Sign(Vector3.Dot(targetUp, nowForward));
-        // float angle = Vector3.Angle(nowForward, targetForward);
-        // Debug.Log(angle + " " + deg + " " + nowForward + " " + targetForward);
-        // transform.Rotate(0, 0, -deg * angle);
         if (Vector3.Angle(nowForward, targetForward) > 90f) targetForward = -targetForward;
         Vector3 targetUp = Vector3.Cross(Vector3.forward, targetForward);
         float deg = Mathf.Sign(Vector3.Dot(targetUp, nowForward));
@@ -42,6 +36,6 @@ public class CameraMove : MonoBehaviour
     private void Update()
     {
         ChangeTransform();
-        ChangeRotation();
+        // ChangeRotation();
     }
 }

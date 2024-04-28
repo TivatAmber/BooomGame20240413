@@ -1,5 +1,5 @@
 using System;
-using Mangers;
+using GlobalSystem;
 using UnityEngine;
 
 namespace Units.Components
@@ -21,35 +21,45 @@ namespace Units.Components
         private void DefaultUpdate(Entity entity)
         {
             if (entity.CanChangeTransform) ChangeTransform(entity);
-            if (entity.canChangeRotationByPlanet) ChangeRotationByPlanet(entity);
-            Debug.DrawLine(entity.transform.position, Global.Planet.PlanetTransform.position);
+            // if (entity.canChangeRotationByPlanet) ChangeRotationByPlanet(entity);
+            // else ChangeRotationBySpeed(entity);
+            ChangeRotationBySpeed(entity);
+            Debug.DrawLine(entity.transform.position, GlobalConfigure.Planet.PlanetTransform.position);
+        }
+
+        protected void ChangeRotationBySpeed(Entity entity)
+        {
+            float speed = Mathf.Sign(Vector3.Dot(entity.transform.up, entity.NowSpeed.normalized));
+            speed *= entity.rotationSpeed;
+            entity.transform.Rotate(0, 0, speed * Time.deltaTime);
         }
         
         protected void ChangeTransform(Entity entity)
         {
             Vector3 nowForce = entity.NowForce;
             Vector3 nowSpeed = entity.NowSpeed + nowForce * Time.deltaTime;
-            // if (nowSpeed.magnitude > entity.maxSpeed)
-            // {
-            //     nowSpeed = nowSpeed.normalized * entity.maxSpeed;
-            // }
+            
             entity.NowSpeed = nowSpeed;
-            Debug.DrawLine(entity.transform.position, entity.transform.position + entity.NowForce.normalized, Color.yellow);
+            Debug.DrawLine(entity.transform.position, entity.transform.position + entity.NowSpeed.normalized,
+                Color.yellow);
             entity.transform.position += nowSpeed * Time.deltaTime;
         }
         protected void ChangeRotationByPlanet(Entity entity)
         {
-            Vector3 relativePosition = entity.transform.position - Global.Planet.PlanetTransform.position;
-            float degree = Tools.GetAngleByDeg(relativePosition, Global.Planet.PlanetTransform.up);
-            bool flag = Vector3.Dot(relativePosition, Global.Planet.PlanetTransform.right) >= 0;
-            float lstRotation = entity.transform.rotation.eulerAngles.z;
-            degree = flag ? 360 - degree : degree;
-            entity.transform.Rotate(0, 0,  (degree - lstRotation) * 0.6f);
+            Vector3 relativePosition = (GlobalConfigure.Planet.PlanetTransform.position - entity.transform.position)
+                .normalized;
+            float delta = Vector3.SignedAngle(entity.transform.up, relativePosition, Vector3.forward);
+            entity.transform.Rotate(0, 0, delta);
+            // float degree = Tools.GetAngleByDeg(relativePosition, GlobalConfigure.Planet.PlanetTransform.up);
+            // bool flag = Vector3.Dot(relativePosition, GlobalConfigure.Planet.PlanetTransform.right) >= 0;
+            // float lstRotation = entity.transform.rotation.eulerAngles.z;
+            // degree = flag ? 360 - degree : degree;
+            // entity.transform.Rotate(0, 0,  degree - lstRotation);
         }
-        public TransformModule(Entity entity)
+        public virtual void Init(Entity entity)
         {
             ChangeRotationByPlanet(entity);
-            entity.NowSpeed = Global.Instance.GetCircularVelocity(entity);
+            entity.NowSpeed = GlobalConfigure.Instance.GetCircularVelocity(entity);
         }
     }
 }

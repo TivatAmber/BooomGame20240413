@@ -1,4 +1,4 @@
-using Mangers;
+using GlobalSystem;
 using UnityEngine;
 
 namespace Units.Components
@@ -18,7 +18,7 @@ namespace Units.Components
         {
             DebugLines(entity);
             Vector3 nowPosition = entity.transform.position;
-            foreach (var otherEntity in Global.Instance.EntityManager.Entities)
+            foreach (var otherEntity in GlobalConfigure.Manager.ViewEntity)
             {
                 Vector3 otherPosition = otherEntity.transform.position;
                 float distance = (otherPosition - nowPosition).magnitude;

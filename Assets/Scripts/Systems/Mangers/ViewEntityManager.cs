@@ -3,18 +3,17 @@ using System.Linq;
 using Units;
 using UnityEngine;
 
-namespace Mangers.Systems
+namespace GlobalSystem.Systems
 {
-    public class EntityManager
+    public class ViewEntityManager
     {
-        private List<Entity> _entities;
+        private readonly List<Entity> _entities = new List<Entity>();
         public List<Entity> Entities => _entities;
 
-        public EntityManager()
+        public ViewEntityManager()
         {
             Entity[] initialEntities = 
                 Object.FindObjectsByType<Entity>(FindObjectsSortMode.InstanceID);
-            _entities = new List<Entity>();
             foreach (var nowEntity in initialEntities.Where(nowEntity => !nowEntity.AlwaysInViewField))
             {
                 _entities.Add(nowEntity);

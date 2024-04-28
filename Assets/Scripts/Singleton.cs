@@ -11,10 +11,7 @@ where T: MonoBehaviour
     {
         get
         {
-            if (_instance == null)
-            {
-                _instance = FindAnyObjectByType<T>();
-            }
+            _instance ??= FindAnyObjectByType<T>();
 
             return _instance;
         }

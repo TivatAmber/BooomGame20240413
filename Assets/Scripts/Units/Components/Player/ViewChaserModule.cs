@@ -18,7 +18,7 @@ namespace Units.Components
         {
             DebugLines(entity);
             Vector3 nowPosition = entity.transform.position;
-            foreach (var otherEntity in GlobalConfigure.Manager.ViewEntity)
+            foreach (var otherEntity in GlobalConfigure.Manager.EntityManager.ViewEntity)
             {
                 Vector3 otherPosition = otherEntity.transform.position;
                 float distance = (otherPosition - nowPosition).magnitude;

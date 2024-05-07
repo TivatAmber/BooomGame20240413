@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using GlobalSystem;
 using Units.Components;
@@ -15,7 +17,11 @@ namespace Units.Enemies
         #endregion
 
         #region CollectorConfigure
+
         [Header("CollectorConfigure")]
+        [SerializeField] private Animator _topAnimator;
+        [SerializeField] private Animator _bottomAnimator;
+        [SerializeField] private Animator _mainAnimator;
         [SerializeField] internal float summonDestroyerInterval;
         [SerializeField] internal int summonDestroyerNum;
         [SerializeField] internal float summonDestroyerDistance;
@@ -27,7 +33,11 @@ namespace Units.Enemies
         #region PoolFunctions
         internal static Collector Create(Vector3 origin, Vector3 forward)
         {
-            Collector ret;
+            Collector ret = null;
+            if (GlobalConfigure.Enemies.Collector.NowNum >= GlobalConfigure.Enemies.Collector.Limit)
+            {
+                return ret;
+            }
             if (Collectors.Count > 0)
             {
                 ret = Collectors[0];
@@ -38,6 +48,7 @@ namespace Units.Enemies
                 ret = Instantiate(GlobalConfigure.EnemiesPrefabs.CollectorPrefab).GetComponent<Collector>();
                 ret.transform.SetParent(GlobalConfigure.EnemiesPrefabs.EnemiesPool);
             }
+            GlobalConfigure.Instance.SummonCollector();
             ret.gameObject.SetActive(true);
             ret.transform.position = origin;
             ret.Init(forward);
@@ -64,13 +75,27 @@ namespace Units.Enemies
             _summonModules ??= new List<SummonModule>
             {
                 new(summonWatcherInterval, summonWatcherDistance,
-                    summonWatcherNum, GlobalConfigure.EnemiesPrefabs.WatcherPrefab)
+                    summonWatcherNum, GlobalConfigure.EnemiesPrefabs.WatcherPrefab),
+                new(summonDestroyerInterval, summonDestroyerDistance,
+                    summonDestroyerNum, GlobalConfigure.EnemiesPrefabs.DestroyerPrefab),
             };
             
             foreach (SummonModule summonModule in _summonModules) summonModule.Reset();
+
+            StartCoroutine(InitAnimation(GlobalConfigure.Enemies.Collector.InitAnimationWaitTime));
+        }
+        
+        protected override IEnumerator InitAnimation(float waitTime = 1f)
+        {
+            StartInitAnimation();
+            _topAnimator.Play("TopInit");
+            _bottomAnimator.Play("BottomInit");
+            _mainAnimator.Play("MainInit");
+            yield return new WaitForSeconds(waitTime);
+            EndInitAnimation();
         }
 
-        public static void Recycle(Collector target)
+        private static void Recycle(Collector target)
         {
             target.gameObject.SetActive(false);
             Collectors.Add(target);
@@ -113,9 +138,10 @@ namespace Units.Enemies
 
         protected override void EndLife()
         {
-            base.EndLife();
             GlobalLevelUp.AllDoneInfo.CollectorKilledAdd();
+            GlobalConfigure.Instance.RecycleCollector();
             Recycle(this);
+            base.EndLife();
         }
     }
 }

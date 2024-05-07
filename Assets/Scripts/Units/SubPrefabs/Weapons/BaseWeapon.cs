@@ -13,6 +13,7 @@ namespace Units.SubPrefabs.Weapons
         [SerializeField] protected float longAndShortInterval;
         [SerializeField] protected float bulletRecycleTime;
         [SerializeField] protected bool penetrating;
+        [SerializeField] protected GameObject weaponUI;
         protected float NowInterval;
 
         public string WeaponName => weaponName;
@@ -44,6 +45,11 @@ namespace Units.SubPrefabs.Weapons
         {
         }
 
+        public virtual void ResetWeapon()
+        {
+            
+        }
+
         public virtual void ChangeEffect(Player entity)
         {
             
@@ -52,6 +58,16 @@ namespace Units.SubPrefabs.Weapons
         public virtual void UndoEffect(Player entity)
         {
             
+        }
+
+        public virtual void ShowUI()
+        {
+            weaponUI.SetActive(true);
+        }
+
+        public virtual void CloseUI()
+        {
+            weaponUI.SetActive(false);
         }
     }
 }

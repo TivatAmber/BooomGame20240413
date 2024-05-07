@@ -34,7 +34,7 @@ namespace Units.SubPrefabs.Weapons.WeaponBullets
         {
             if (other.CompareTag("Enemies"))
             {
-                IEnumerable<Entity> nowEntity = GlobalConfigure.Manager.EnemyEntity.Where(target =>
+                IEnumerable<Entity> nowEntity = GlobalConfigure.Manager.EntityManager.EnemyEntity.Where(target =>
                     Vector3.Distance(transform.transform.position, transform.position) <= attackRadius);
                 foreach (Entity entity in nowEntity)
                 {

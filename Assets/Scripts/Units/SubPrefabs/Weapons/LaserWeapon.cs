@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using GlobalSystem;
 using Units.SubPrefabs.Weapons.WeaponBullets;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Units.SubPrefabs.Weapons
 {
@@ -13,6 +14,7 @@ namespace Units.SubPrefabs.Weapons
         [SerializeField] private float loadingTime;
         [SerializeField] private float releaseTime;
         [SerializeField] private float viewFieldEffectByDeg;
+        [SerializeField] private Image loadingBar;
         private float _nowDamageInterval;
         private float _nowLoadingTime;
         
@@ -124,19 +126,14 @@ namespace Units.SubPrefabs.Weapons
             {
                 case LaserWeaponState.Loading:
                     #region UpdateUI
-                    /*
-                     * TODO
-                     * Update UI
-                     */
+
+                    loadingBar.fillAmount = _nowLoadingTime / loadingTime;
                     #endregion
                     entity.energy -= costOfEnergy * Time.deltaTime;
                     break;
                 case LaserWeaponState.Attacking:                
                     #region UpdateUI
-                    /*
-                     * TODO
-                     * Update UI
-                     */
+                    loadingBar.fillAmount = 0f;
                     #endregion
                     break;
             }
@@ -153,6 +150,14 @@ namespace Units.SubPrefabs.Weapons
                     penetrating);
             }
         }
+
+        public override void ResetWeapon()
+        {
+            _nowDamageInterval = 0f;
+            _nowLoadingTime = 0f;
+            loadingBar.fillAmount = 0f;
+        }
+
         #endregion
         #region Effect
 

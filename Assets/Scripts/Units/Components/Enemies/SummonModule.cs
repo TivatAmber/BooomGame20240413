@@ -43,13 +43,13 @@ namespace Units.Components.Enemies
                 Vector3 forward = Random.insideUnitCircle;
                 if (_prefab.TryGetComponent<Watcher>(out _))
                 {
-                    GlobalConfigure.Manager.EnemyEntity
+                    GlobalConfigure.Manager.EntityManager
                         .Add(Watcher.Create(entity.transform.position
                             + forward * _distance));
                 } 
                 else if (_prefab.TryGetComponent<Destroyer>(out _))
                 {
-                    GlobalConfigure.Manager.EnemyEntity
+                    GlobalConfigure.Manager.EntityManager
                         .Add(Destroyer.Create(entity.transform.position
                             + forward * _distance));
                 }

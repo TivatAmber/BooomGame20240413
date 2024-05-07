@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace GlobalSystem
 {
@@ -37,6 +38,12 @@ namespace GlobalSystem
             {
                 Instance.allOcculatorKilled++;
             }
+        }
+
+        protected override void OnStart()
+        {
+            base.OnStart();
+            SceneManager.LoadScene(2);
         }
     }
 }

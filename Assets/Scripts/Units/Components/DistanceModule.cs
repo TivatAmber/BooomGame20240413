@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DistanceModule
 {
-    public void Update(Player entity)
+    public void Update(Entity entity)
     {
         float distance = (entity.transform.position - GlobalConfigure.Planet.PlanetTransform.position).magnitude;
         float deltaEnergy;
@@ -34,6 +34,7 @@ public class DistanceModule
         }
 
         deltaEnergy *= Time.deltaTime;
+        // Debug.Log(deltaEnergy);
         if (deltaEnergy + entity.energy > 0)
         {
             entity.energy = Mathf.Min(entity.energyLimit, entity.energy + deltaEnergy);

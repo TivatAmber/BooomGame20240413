@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using GlobalSystem;
@@ -16,15 +17,16 @@ namespace Units.Enemies
         #region Modules
 
         private TransformModule _transformModule;
+        private DistanceModule _distanceModule;
         private SearchAndBroadcastModule _searchAndBroadcastModule;
-
+        
         #endregion
 
         #region WatcherConfigure
 
-        [Header("WatcherConfigure")] [SerializeField]
-        internal float costOfEnergy;
-
+        [Header("WatcherConfigure")]
+        [SerializeField] internal float costOfEnergy;
+        [SerializeField] private Animator _animator;
         [SerializeField] internal float searchRadius;
         [SerializeField] internal float accelerate;
         [SerializeField] internal float selfDestructRadius;
@@ -58,6 +60,7 @@ namespace Units.Enemies
         {
             Idle,
             Chasing,
+            NearTarget,
             Booming,
             Sleeping
         }
@@ -70,7 +73,11 @@ namespace Units.Enemies
 
         public static Watcher Create(Vector3 pos)
         {
-            Watcher ret;
+            Watcher ret = null;
+            if (GlobalConfigure.Enemies.Watcher.NowNum >= GlobalConfigure.Enemies.Watcher.Limit)
+            {
+                return ret;
+            }
             if (Watchers.Count > 0)
             {
                 ret = Watchers[0];
@@ -81,7 +88,7 @@ namespace Units.Enemies
                 ret = Instantiate(GlobalConfigure.EnemiesPrefabs.WatcherPrefab).GetComponent<Watcher>();
                 ret.transform.SetParent(GlobalConfigure.EnemiesPrefabs.EnemiesPool);
             }
-
+            GlobalConfigure.Instance.SummonWatcher();
             ret.gameObject.SetActive(true);
             ret.Init(pos);
             return ret;
@@ -99,6 +106,7 @@ namespace Units.Enemies
         {
             base.Start();
             _transformModule ??= new TransformModule();
+            _distanceModule = new DistanceModule();
             _searchAndBroadcastModule = new SearchAndBroadcastModule();
 
             _transformModule.Init(this);
@@ -121,9 +129,19 @@ namespace Units.Enemies
             selfDestructDamage = GlobalConfigure.Enemies.Watcher.SelfDestructDamage;
             canBroadcast = GlobalConfigure.Enemies.Watcher.CanBroadcast;
             broadcastRadius = GlobalConfigure.Enemies.Watcher.BroadcastRadius;
+            
             _transformModule ??= new TransformModule();
             _transformModule?.Init(this);
             _fallenDown = false;
+            
+            StartCoroutine(InitAnimation(GlobalConfigure.Enemies.Collector.InitAnimationWaitTime));
+        }
+        protected override IEnumerator InitAnimation(float waitTime = 1f)
+        {
+            StartInitAnimation();
+            _animator.Play("InitAnimation");
+            yield return new WaitForSeconds(waitTime);
+            EndInitAnimation();
         }
 
         private void Update()
@@ -144,6 +162,7 @@ namespace Units.Enemies
             _forceModule.Update(this);
             _transformModule.Update(this);
             _searchAndBroadcastModule.Update(this);
+            _distanceModule.Update(this);
         }
 
         private void LateUpdate()
@@ -158,16 +177,18 @@ namespace Units.Enemies
                 case WatcherState.Idle when _target is not null:
                 {
                     _nowState = WatcherState.Chasing;
+                    _animator.Play("Chasing");
                     LeaveOrbit();
                     break;
                 }
                 case WatcherState.Chasing when _target is null:
                 {
                     _nowState = WatcherState.Sleeping;
+                    _animator.Play("Idle");
                     break;
                 }
                 case WatcherState.Chasing
-                    when (transform.position - _target.transform.position).magnitude < selfDestructRadius:
+                    when Vector3.Distance(transform.position, _target.transform.position) < selfDestructRadius - selfDestructRadiusBias:
                 {
                     _nowState = WatcherState.Booming;
                     died = true;
@@ -176,18 +197,34 @@ namespace Units.Enemies
                 case WatcherState.Sleeping when _target is not null:
                 {
                     _nowState = WatcherState.Chasing;
+                    _animator.Play("Chasing");
                     break;
                 }
                 case WatcherState.Sleeping 
-                    when (NowSpeed - GlobalConfigure.Instance.GetCircularVelocity(this)).magnitude < 0.1f:
+                    when Vector3.Distance(NowSpeed,GlobalConfigure.Instance.GetCircularVelocity(this)) < 0.1f:
                 {
                     EnterOrbit();
                     _nowState = WatcherState.Idle;
+                    _animator.Play("Idle");
+                    break;
+                }
+                case WatcherState.Chasing
+                    when Vector3.Distance(transform.position, _target.transform.position) < selfDestructRadius:
+                {
+                    _nowState = WatcherState.NearTarget;
+                    _animator.Play("Booming");
+                    break;
+                }
+                case WatcherState.Booming
+                    when Vector3.Distance(transform.position, _target.transform.position) >= selfDestructRadius:
+                {
+                    _nowState = WatcherState.Chasing;
+                    _animator.Play("Chasing");
                     break;
                 }
             }
 
-            if ((transform.position - GlobalConfigure.Planet.PlanetTransform.position).magnitude <
+            if (Vector3.Distance(transform.position , GlobalConfigure.Planet.PlanetTransform.position) <
                 GlobalConfigure.Energy.R0)
             {
                 _fallenDown = true;
@@ -197,13 +234,13 @@ namespace Units.Enemies
 
         protected override void EndLife()
         {
-            base.EndLife();
             GlobalLevelUp.AllDoneInfo.WatcherKilledAdd();
+            GlobalConfigure.Instance.RecycleWatcher();
             if (health <= 0)
             {
-                IEnumerable<Entity> nowEntities = GlobalConfigure.Manager.EnemyEntity
+                IEnumerable<Entity> nowEntities = GlobalConfigure.Manager.EntityManager.EnemyEntity
                     .Where(entity =>
-                        Vector3.Distance(transform.position, entity.transform.position) <
+                                Vector3.Distance(transform.position, entity.transform.position) <
                         selfDestructRadius - selfDestructRadiusBias);
                 foreach (Entity entity in nowEntities)
                 {
@@ -212,7 +249,7 @@ namespace Units.Enemies
             }
             else if (health > 0 && _nowState == WatcherState.Booming)
             {
-                IEnumerable<Entity> nowEntities = GlobalConfigure.Manager.PlayerEntity
+                IEnumerable<Entity> nowEntities = GlobalConfigure.Manager.EntityManager.PlayerEntity
                     .Where(entity =>
                         Vector3.Distance(transform.position, entity.transform.position) < selfDestructRadius);
                 foreach (Entity entity in nowEntities)
@@ -220,8 +257,8 @@ namespace Units.Enemies
                     entity.ChangeHealth(-selfDestructDamage);
                 }
             }
-
             Recycle(this);
+            base.EndLife();
         }
     }
 }

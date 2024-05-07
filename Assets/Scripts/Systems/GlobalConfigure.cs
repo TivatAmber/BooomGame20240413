@@ -35,13 +35,39 @@ namespace GlobalSystem
             #endregion
         }
 
+        public void SummonCollector()
+        {
+            collectorNowNum++;
+        }
+        public void RecycleCollector()
+        {
+            collectorNowNum--;
+        }
+
+        public void SummonWatcher()
+        {
+            watcherNowNum++;
+        }
+        public void RecycleWatcher()
+        {
+            watcherNowNum--;
+        }
+        public void SummonDestroyer()
+        {
+            destroyerNowNum++;
+        }
+        public void RecycleDestroyer()
+        {
+            destroyerNowNum--;
+        }
+        
         private IEnumerator Summon()
         {
             while (true)
             {
                 if (_nowCollectorInterval >= _collectorInterval)
                 {
-                    _entityManager.Add(Collector.Create(GlobalConfigure.Planet.PlanetTransform.position
+                    Manager.EntityManager.Add(Collector.Create(GlobalConfigure.Planet.PlanetTransform.position
                         , Random.insideUnitCircle.normalized));
                     _nowCollectorInterval -= _collectorInterval;
                 }
@@ -58,9 +84,7 @@ namespace GlobalSystem
         private EntityManager _entityManager;
         public static class Manager
         {
-            public static List<Entity> ViewEntity => Instance._entityManager.ViewEntity;
-            public static List<Entity> EnemyEntity => Instance._entityManager.EnemyEntity;
-            public static List<Entity> PlayerEntity => Instance._entityManager.PlayerEntity;
+            public static EntityManager EntityManager => Instance._entityManager;
         }
         #endregion
         #region PlanetConfigure
@@ -159,6 +183,8 @@ namespace GlobalSystem
         #region CollectorConfigure
         [Header("CollectorConfigure")]
         [SerializeField] private GameObject collectorPrefab;
+        [SerializeField] private int collectorLimit;
+        private int collectorNowNum = 0;
         [SerializeField] private float collectorHealth;
         [SerializeField] private float collectorMaxSpeed;
         [SerializeField] private float collectorRotationSpeed;
@@ -174,10 +200,13 @@ namespace GlobalSystem
         [SerializeField] private float collectorSummonWatcherInterval;
         [SerializeField] private int collectorSummonWatcherNum;
         [SerializeField] private float collectorSummonWatcherDistance;
+        [SerializeField] private float collectorInitAnimationWaitTime;
         #endregion
         #region WatcherConfigure
         [Header("WatcherConfigure")] 
         [SerializeField] private GameObject watcherPrefab;
+        [SerializeField] private int watcherLimit;
+        private int watcherNowNum = 0;
         [SerializeField] private float watcherHealth;
         [SerializeField] private float watcherMaxSpeed;
         [SerializeField] private float watcherRotationSpeed;
@@ -193,10 +222,38 @@ namespace GlobalSystem
         [SerializeField] private float watcherSelfDestructDamage;
         [SerializeField] private bool watcherCanBroadcast;
         [SerializeField] private float watcherBroadcastRadius;
+        [SerializeField] private float watcherInitAnimationWaitTime;
         #endregion
         #region DestroyerConfigure
+        [Header("DestroyerConfigure")]
         [SerializeField] private GameObject destroyerPrefab;
-        // TODO
+        [SerializeField] private int destroyerLimit; 
+        private int destroyerNowNum = 0;
+        [SerializeField] private float destroyerHealth;
+        [SerializeField] private float destroyerMaxSpeed;
+        [SerializeField] private float destroyerRotationSpeed;
+        [SerializeField] private float destroyerMinEnergy;
+        [SerializeField] private float destroyerMaxEnergy;
+        [SerializeField] private float destroyerMinResources;
+        [SerializeField] private float destroyerMaxResources;
+        [SerializeField] private float destroyerCostOfEnergy;
+        [SerializeField] private float destroyerAccelerate;
+        [SerializeField] private float destroyerSearchRadius;
+        [SerializeField] private float destroyerFollowingRadius;
+        [SerializeField] private float destroyerFollowingAccelerate;
+        [SerializeField] private float destroyerLaserRadius;
+        [SerializeField] private float destroyerLaserPrepareTime;
+        [SerializeField] private float destroyerLaserAttackTime;
+        [SerializeField] private float destroyerLaserRotationSpeed;
+        [SerializeField] private float destroyerLaserAccelerate;
+        [SerializeField] private float destroyLaserDamage;
+        [SerializeField] private float destroyerLaserSpeed;
+        [SerializeField] private float destroyerLaserRecycleTime;
+        [SerializeField] private bool destroyerPenetrating;
+        [SerializeField] private float destroyerLaserAttackInterval;
+        [SerializeField] private bool destroyerCanBroadcast;
+        [SerializeField] private float destroyerBroadcastRadius;
+        [SerializeField] private float destroyerInitAnimationWaitTime;
         #endregion
         #region Prefabs
         [Header("EnemiesPools")]
@@ -214,6 +271,8 @@ namespace GlobalSystem
             #region Collector
             public static class Collector
             {
+                public static int Limit => Instance.collectorLimit;
+                public static int NowNum => Instance.collectorNowNum;
                 public static float Health => Instance.collectorHealth;
                 public static float Energy => Random.Range(Instance.collectorMinEnergy, Instance.collectorMaxEnergy);
                 public static float Height => Random.Range(Instance.collectorMinHeight, Instance.collectorMaxHeight);
@@ -228,11 +287,14 @@ namespace GlobalSystem
                 public static int SummonWatcherNum => Instance.collectorSummonWatcherNum;
                 public static float SummonDestroyerDistance => Instance.collectorSummonDestroyerDistance;
                 public static float SummonWatcherDistance => Instance.collectorSummonWatcherDistance;
+                public static float InitAnimationWaitTime => Instance.collectorInitAnimationWaitTime;
             }
             #endregion
             #region Watcher
             public static class Watcher
             {
+                public static int Limit => Instance.watcherLimit;
+                public static int NowNum => Instance.watcherNowNum;
                 public static float Health => Instance.watcherHealth;
                 public static float Energy => Random.Range(Instance.watcherMinEnergy, Instance.watcherMaxEnergy);
                 public static float MaxSpeed => Instance.watcherMaxSpeed;
@@ -247,12 +309,38 @@ namespace GlobalSystem
                 public static float SelfDestructDamage => Instance.watcherSelfDestructDamage;
                 public static bool CanBroadcast => Instance.watcherCanBroadcast;
                 public static float BroadcastRadius => Instance.watcherBroadcastRadius;
+                public static float InitAnimationWaitTime => Instance.watcherInitAnimationWaitTime;
             }
             #endregion
             #region Destroyer
             public static class Destroyer
             {
-                // TODO
+                public static int Limit => Instance.destroyerLimit;
+                public static int NowNum => Instance.destroyerNowNum;
+                public static float Health => Instance.destroyerHealth;
+                public static float Energy => Random.Range(Instance.destroyerMinEnergy, Instance.destroyerMaxEnergy);
+                public static float MaxSpeed => Instance.destroyerMaxSpeed;
+                public static float RotationSpeed => Instance.destroyerRotationSpeed;
+                public static float Resources =>
+                    Random.Range(Instance.destroyerMinResources, Instance.destroyerMaxResources);
+                public static float CostOfEnergy => Instance.destroyerCostOfEnergy;
+                public static float Accelerate => Instance.destroyerAccelerate;
+                public static float SearchRadius => Instance.destroyerSearchRadius;
+                public static float FollowingRadius => Instance.destroyerFollowingRadius;
+                public static float FollowingAccelerate => Instance.destroyerFollowingAccelerate;
+                public static float LaserRadius => Instance.destroyerLaserRadius;
+                public static float LaserPrepareTime => Instance.destroyerLaserPrepareTime;
+                public static float LaserAttackTime => Instance.destroyerLaserAttackTime;
+                public static float LaserRotationSpeed => Instance.destroyerLaserRotationSpeed;
+                public static float LaserAccelerate => Instance.destroyerLaserAccelerate;
+                public static float LaserDamage => Instance.destroyLaserDamage;
+                public static float LaserSpeed => Instance.destroyerLaserSpeed;
+                public static float LaserRecycleTime => Instance.destroyerLaserRecycleTime;
+                public static bool LaserPenetrating => Instance.destroyerPenetrating;
+                public static float LaserAttackInterval => Instance.destroyerLaserAttackInterval;
+                public static bool CanBroadcast => Instance.destroyerCanBroadcast;
+                public static float BroadcastRadius => Instance.destroyerBroadcastRadius;
+                public static float InitAnimationWaitTime => Instance.destroyerInitAnimationWaitTime;
             }
             #endregion
         }
@@ -262,6 +350,7 @@ namespace GlobalSystem
         [SerializeField] private GameObject bulletPrefab;
         [SerializeField] private GameObject missilePrefab;
         [SerializeField] private GameObject laserPrefab;
+        [SerializeField] private GameObject destroyerLaserPrefab;
         [SerializeField] private Transform bulletPool;
 
         public static class BulletPrefabs
@@ -270,6 +359,7 @@ namespace GlobalSystem
             public static GameObject BulletPrefab => Instance.bulletPrefab;
             public static GameObject MissilePrefab => Instance.missilePrefab;
             public static GameObject LaserPrefab => Instance.laserPrefab;
+            public static GameObject DestroyerLaserPrefab => Instance.destroyerLaserPrefab;
         }
         #endregion
     }

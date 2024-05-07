@@ -31,10 +31,11 @@ namespace Units.Components
         {
             float speed = Mathf.Sign(Vector3.Dot(entity.transform.up, entity.NowSpeed.normalized));
             speed *= entity.rotationSpeed;
-            entity.transform.Rotate(0, 0, speed * Time.deltaTime);
+            float maxAngle = Vector3.SignedAngle(entity.transform.right, entity.NowSpeed.normalized, Vector3.forward);
+            entity.transform.Rotate(0, 0, Tools.GetCloseToZero(maxAngle, speed * Time.deltaTime));
         }
         
-        protected void ChangeTransform(Entity entity)
+        protected virtual void ChangeTransform(Entity entity)
         {
             Vector3 nowForce = entity.NowForce;
             Vector3 nowSpeed = entity.NowSpeed + nowForce * Time.deltaTime;

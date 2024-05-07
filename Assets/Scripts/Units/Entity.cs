@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using GlobalSystem;
 using UnityEngine;
 using Units.Components;
@@ -33,17 +35,21 @@ namespace Units
         [Header("EntityBaseConfigure")]
         public bool canBeSee = true;
         [SerializeField] internal bool alwaysInViewField;
-        [SerializeField] internal float health;
-        [SerializeField] internal float energy;
         [FormerlySerializedAs("resource")] [SerializeField] internal float resources;
         [SerializeField] internal bool canBeHurt;
+        [SerializeField] internal float energyLimit;
+        [SerializeField] internal float healthLimit;
+        [SerializeField] internal float health;
+        [SerializeField] internal float energy;
         internal bool died;
 
         public bool AlwaysInViewField => alwaysInViewField;
         public bool CanChangeRotation => canChangeRotationByPlanet;
         public bool CanChangeTransform => canChangeTransform;
         public float Health => health;
+        public float HealthLimit => healthLimit;
         public float Energy => energy;
+        public float EnergyLimit => energyLimit;
         public float Resources => resources;
         #endregion
 
@@ -60,10 +66,10 @@ namespace Units
             died = false;
             canChangeTransform = true;
             canChangeRotationByPlanet = true;
-            this.health = health;
+            this.health = this.healthLimit = health;
             this.maxSpeed = maxSpeed;
             this.rotationSpeed = rotationSpeed;
-            this.energy = energy;
+            this.energy = this.energyLimit = energy;
             this.resources = resources;
         }
 
@@ -92,13 +98,32 @@ namespace Units
         protected virtual void EndLife()
         {
             if (!alwaysInViewField)
-                GlobalConfigure.Manager.EnemyEntity.Remove(this);
+                GlobalConfigure.Manager.EntityManager.Remove(this);
             GlobalLevelUp.AllDoneInfo.ResourceAdd(resources);
         }
 
         protected virtual void ChangeState()
         {
             
+        }
+        
+
+        protected void EndInitAnimation()
+        {
+            canBeHurt = true;
+            canChangeTransform = true;
+            canChangeRotationByPlanet = true;
+        }
+        protected void StartInitAnimation()
+        {
+            canBeHurt = false;
+            canChangeTransform = false;
+            canChangeRotationByPlanet = false;
+        }
+
+        protected virtual IEnumerator InitAnimation(float waitTime = 1f)
+        {
+            throw new NotImplementedException();
         }
     }
 }

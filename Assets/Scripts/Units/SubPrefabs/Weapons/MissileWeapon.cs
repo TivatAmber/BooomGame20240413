@@ -116,6 +116,7 @@ namespace Units.SubPrefabs.Weapons
             _loading = false;
             _nowLoadingTime = 0f;
             loadingBar.fillAmount = 0f;
+            magazineText.SetText("Magazine: " + _magazine);
         }
 
         #endregion

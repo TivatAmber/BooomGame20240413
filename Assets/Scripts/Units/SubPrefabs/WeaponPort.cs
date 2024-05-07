@@ -19,6 +19,12 @@ namespace Units.SubPrefabs
             _nowWeapon = 0;
             weaponList ??= new List<BaseWeapon>();
             _numOfWeapon = weaponList.Count;
+            foreach (BaseWeapon weapon in weaponList)
+            {
+                weapon.CloseUI();
+            }
+            if (_numOfWeapon > 0)
+                weaponList[_nowWeapon].ShowUI();
         }
         public string GetWeaponName()
         {
@@ -57,21 +63,32 @@ namespace Units.SubPrefabs
             }
         }
 
+        public void ResetWeapon()
+        {
+            if (weaponList[_nowWeapon] is not null)
+            {
+                weaponList[_nowWeapon].ResetWeapon();
+            }
+        }
+
         public void ChangeNextWeapon()
         {
-            weaponList[_nowWeapon].ChangeEffect(owner);
+            weaponList[_nowWeapon].UndoEffect(owner);
+            weaponList[_nowWeapon].CloseUI();
             _nowWeapon = (_nowWeapon + 1) % _numOfWeapon;
             weaponList[_nowWeapon].UndoEffect(owner);
+            weaponList[_nowWeapon].ShowUI();
             
             Debug.Log(weaponList[_nowWeapon].WeaponName);
         }
 
         public void ChangeLastWeapon()
         {
-            weaponList[_nowWeapon].ChangeEffect(owner);
+            weaponList[_nowWeapon].UndoEffect(owner);
+            weaponList[_nowWeapon].CloseUI();
             _nowWeapon = (_nowWeapon - 1 + _numOfWeapon) % _numOfWeapon;
             weaponList[_nowWeapon].UndoEffect(owner);
-            
+            weaponList[_nowWeapon].ShowUI();
         }
     }
 }

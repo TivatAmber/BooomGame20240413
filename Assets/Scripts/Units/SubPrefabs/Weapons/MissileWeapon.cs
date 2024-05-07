@@ -1,7 +1,11 @@
+using System;
 using System.Collections.Generic;
 using GlobalSystem;
+using TMPro;
 using Units.SubPrefabs.Weapons.WeaponBullets;
 using UnityEngine;
+using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 namespace Units.SubPrefabs.Weapons
 {
@@ -16,6 +20,8 @@ namespace Units.SubPrefabs.Weapons
         [SerializeField] private int maxMagazine;
         [SerializeField] private float viewFieldEffectByDeg;
         [SerializeField] private float attackRadius;
+        [SerializeField] private Image loadingBar;
+        [SerializeField] private TextMeshProUGUI magazineText;
         private float _nowReloadTime;
         private int _magazine;
         private bool _loading;
@@ -50,14 +56,13 @@ namespace Units.SubPrefabs.Weapons
         {
             base.Start();
             _magazine = maxMagazine;
-            _loading = false;
+            ResetWeapon();
         }
 
         private void Update()
         {
             if (NowInterval < shootInterval)
                 NowInterval += Time.deltaTime;
-            
             if (!_loading) return;
             if (_nowLoadingTime < reloadTime)
                 _nowLoadingTime += Time.deltaTime;
@@ -76,6 +81,9 @@ namespace Units.SubPrefabs.Weapons
             {
                 NowInterval -= shootInterval;
                 _magazine -= 1;
+                #region UpdateUI
+                magazineText.SetText("Magazine: " + _magazine);
+                #endregion
                 Missile missile = Get();
                 missile.Init(transform.position, entity.Forward, entity.transform.rotation, 
                     bulletSpeed, bulletDamage, bulletRecycleTime,
@@ -86,19 +94,30 @@ namespace Units.SubPrefabs.Weapons
 
         public override void LongAttack(Entity entity, float duringTime)
         {
+            if (_magazine == maxMagazine) return;
+            if (entity.energy < costOfEnergy * Time.deltaTime) return;
             _loading = true;
-            #region UpdateUI
-            /*
-             * TODO
-             * Update UI
-             */
-            #endregion
-
             entity.energy -= costOfEnergy * Time.deltaTime;
-            if (!(_nowLoadingTime > reloadTime) || _magazine == maxMagazine) return;
+            #region UpdateUI
+            loadingBar.fillAmount = _nowLoadingTime / reloadTime;
+            #endregion
+            
+            if (_nowLoadingTime <= reloadTime) return;
             _nowLoadingTime -= reloadTime;
             _magazine += 1;
+            
+            #region UpdateUI
+            magazineText.SetText("Magazine: " + _magazine);
+            #endregion
         }
+
+        public override void ResetWeapon()
+        {
+            _loading = false;
+            _nowLoadingTime = 0f;
+            loadingBar.fillAmount = 0f;
+        }
+
         #endregion
 
         #region Effect

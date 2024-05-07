@@ -1,6 +1,9 @@
+using GlobalSystem;
+using TMPro;
 using Units.Components;
 using Units.SubPrefabs;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Units
 {
@@ -12,6 +15,7 @@ namespace Units
         private PlayerTransformModule _transformModule;
         private PlayerWeaponModule _weaponModule;
         private DistanceModule _distanceModule;
+        private UIModule _uiModule;
         #endregion
         
         #region ViewChaserConfigure
@@ -32,13 +36,19 @@ namespace Units
         [SerializeField] internal float drivingCostPerSec;
         [SerializeField] internal float fasterDrivingCostPerSec;
         [SerializeField] internal float rotationCostPerSec;
-        [SerializeField] internal float energyLimit;
         #endregion
-
         #region PlayerWeaponConfigure
-
         [Header("PlayerWeaponConfigure")]
         [SerializeField] internal WeaponPort WeaponPort;
+        #endregion
+        #region UICOnfigure
+        [Header("PlayerUI")]
+        [SerializeField] internal TextMeshProUGUI nowSpeedUI;
+        [SerializeField] internal TextMeshProUGUI orbitalSpeedUI;
+        [SerializeField] internal TextMeshProUGUI heightUI;
+        [SerializeField] internal TextMeshProUGUI resourceUI;
+        [SerializeField] internal Image healthUI;
+        [SerializeField] internal Image energyUI;
         #endregion
         #endregion
 
@@ -56,8 +66,12 @@ namespace Units
 
         #region PlayerState
         internal bool cantBeHurt;
+        [SerializeField] internal float nowSpeedModule;
+        [SerializeField] internal float orbitalSpeedModule;
 
         public bool CantBeHurt => cantBeHurt;
+        public float NowSpeedModule => nowSpeedModule;
+        public float OrbitalSpeedModule => orbitalSpeedModule;
         #endregion
         private new void Start()
         {
@@ -67,9 +81,11 @@ namespace Units
             _inputModule = new InputModule();
             _transformModule = new PlayerTransformModule();
             _weaponModule = new PlayerWeaponModule();
+            _uiModule = new UIModule();
             
             _transformModule.Init(this);
             _weaponModule.Init();
+            health = healthLimit;
         }
         private void Update()
         {
@@ -80,6 +96,10 @@ namespace Units
             _transformModule.Update(this);
             _weaponModule.Update(this);
             _viewChaserModule.Update(this);
+
+            nowSpeedModule = NowSpeed.magnitude;
+            orbitalSpeedModule = GlobalConfigure.Instance.GetCircularVelocity(this).magnitude;
+            _uiModule.UIUpdate(this);
         }
         #region ChangeViewDegree
 

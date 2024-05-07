@@ -16,6 +16,8 @@ namespace GlobalSystem.Systems
 
         public void Add(Entity entity)
         {
+            if (entity is null) return;
+            
             if (entity.CompareTag("Enemies"))
             {
                 _enemyEntityManager.Add(entity);
@@ -33,6 +35,8 @@ namespace GlobalSystem.Systems
 
         public void Remove(Entity entity)
         {
+            if (entity is null) return;
+            
             if (entity.CompareTag("Enemies"))
             {
                 _enemyEntityManager.Remove(entity);

@@ -11,7 +11,7 @@ namespace Units.Components.Enemies
         public void Update(ISearchAndBroadcast entity)
         {
             entity.SearchTarget = null;
-            foreach (Entity target in GlobalConfigure.Manager.PlayerEntity
+            foreach (Entity target in GlobalConfigure.Manager.EntityManager.PlayerEntity
                          .Where(target => 
                              Vector3.Distance(entity.Position, target.transform.position) < entity.SearchRadius))
             {
@@ -23,7 +23,7 @@ namespace Units.Components.Enemies
         {
             if (!entity.CanBroadcast) return;
             
-            foreach (Entity target in GlobalConfigure.Manager.EnemyEntity
+            foreach (Entity target in GlobalConfigure.Manager.EntityManager.EnemyEntity
                          .Where(target => 
                              Vector3.Distance(entity.Position, target.transform.position) < entity.BroadcastRadius))
             {

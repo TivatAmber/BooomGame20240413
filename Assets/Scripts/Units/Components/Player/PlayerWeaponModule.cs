@@ -51,6 +51,10 @@ namespace Units.Components
             {
                 entity.WeaponPort.LongAttack(entity.WeaponAttackOrderDuringTime);
             }
+            else
+            {
+                entity.WeaponPort.ResetWeapon();
+            }
         }
     }
 }

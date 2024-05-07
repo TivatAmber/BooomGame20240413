@@ -222,6 +222,7 @@ namespace GlobalSystem
         [SerializeField] private float watcherSelfDestructDamage;
         [SerializeField] private bool watcherCanBroadcast;
         [SerializeField] private float watcherBroadcastRadius;
+        [SerializeField] private float watcherBoomingDelay;
         [SerializeField] private float watcherInitAnimationWaitTime;
         #endregion
         #region DestroyerConfigure
@@ -309,6 +310,7 @@ namespace GlobalSystem
                 public static float SelfDestructDamage => Instance.watcherSelfDestructDamage;
                 public static bool CanBroadcast => Instance.watcherCanBroadcast;
                 public static float BroadcastRadius => Instance.watcherBroadcastRadius;
+                public static float BoomingDelay => Instance.watcherBoomingDelay;
                 public static float InitAnimationWaitTime => Instance.watcherInitAnimationWaitTime;
             }
             #endregion

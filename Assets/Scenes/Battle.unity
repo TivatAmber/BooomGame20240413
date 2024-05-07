@@ -153,14 +153,14 @@ MonoBehaviour:
   gm: 2000
   inverseGm: 0
   maxInverseGm: 0
-  dragRatio: 0.6
-  dragConstant: 5
+  dragRatio: 0.2
+  dragConstant: 0.1
   r0: 10
   e0: 10
-  r1: 20
+  r1: 50
   e1: 5
   r2: 90
-  e2: -2
+  e2: 2
   r3: 100
   e3: -3
   r4: 200
@@ -186,7 +186,7 @@ MonoBehaviour:
   collectorMaxHeight: 50
   collectorMinResources: 2
   collectorMaxResources: 5
-  collectorSummonDestroyerInterval: 1
+  collectorSummonDestroyerInterval: 5
   collectorSummonDestroyerDistance: 4
   collectorSummonDestroyerNum: 3
   collectorSummonWatcherInterval: 10
@@ -194,7 +194,7 @@ MonoBehaviour:
   collectorSummonWatcherDistance: 5
   collectorInitAnimationWaitTime: 1
   watcherPrefab: {fileID: 6082493619386131883, guid: df58ac4af0f414aaa8db31253780335b, type: 3}
-  watcherLimit: 10
+  watcherLimit: 50
   watcherHealth: 1
   watcherMaxSpeed: 30
   watcherRotationSpeed: 1000
@@ -205,28 +205,29 @@ MonoBehaviour:
   watcherCostOfEnergy: 1
   watcherSearchRadius: 40
   watcherAccelerate: 15
-  watcherSelfDestructRadius: 2
-  watcherSelfDestructRadiusBias: 1.5
+  watcherSelfDestructRadius: 4
+  watcherSelfDestructRadiusBias: 2
   watcherSelfDestructDamage: 2
   watcherCanBroadcast: 1
   watcherBroadcastRadius: 10
+  watcherBoomingDelay: 0.5
   watcherInitAnimationWaitTime: 1
   destroyerPrefab: {fileID: 6868353768627348940, guid: 3a951f368f7794153b1b7dbd7d87afd5, type: 3}
   destroyerLimit: 20
   destroyerHealth: 5
   destroyerMaxSpeed: 30
-  destroyerRotationSpeed: 1000
+  destroyerRotationSpeed: 200
   destroyerMinEnergy: 3
   destroyerMaxEnergy: 4
   destroyerMinResources: 3
   destroyerMaxResources: 4
   destroyerCostOfEnergy: 0
-  destroyerAccelerate: 10
+  destroyerAccelerate: 5
   destroyerSearchRadius: 50
   destroyerFollowingRadius: 10
-  destroyerFollowingAccelerate: -15
+  destroyerFollowingAccelerate: -7
   destroyerLaserRadius: 15
-  destroyerLaserPrepareTime: 0.4
+  destroyerLaserPrepareTime: 1.5
   destroyerLaserAttackTime: 0.1
   destroyerLaserRotationSpeed: 10
   destroyerLaserAccelerate: 10
@@ -234,7 +235,7 @@ MonoBehaviour:
   destroyerLaserSpeed: 100
   destroyerLaserRecycleTime: 1
   destroyerPenetrating: 0
-  destroyerLaserAttackInterval: 0.01
+  destroyerLaserAttackInterval: 0.05
   destroyerCanBroadcast: 0
   destroyerBroadcastRadius: 0
   destroyerInitAnimationWaitTime: 1
@@ -744,7 +745,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -825,6 +826,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 523390489}
+  - component: {fileID: 523390491}
+  - component: {fileID: 523390490}
   m_Layer: 0
   m_Name: Planet
   m_TagString: Untagged
@@ -842,12 +845,87 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 50, y: 50, z: 1}
+  m_LocalScale: {x: 3.7, y: 3.7, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1578487341}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &523390490
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 523390488}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_Sprite: {fileID: 8016960355062802271, guid: 31060f68037b045beac81a8765cb97d9, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 1, y: 1}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
+--- !u!95 &523390491
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 523390488}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: a8f1b8c0091cc4c739799a2457f310dc, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &542015593
 GameObject:
   m_ObjectHideFlags: 0
@@ -6731,7 +6809,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5eec0c5a3d674d2289c30f3b404d6b42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  body: {fileID: 2124188391}
+  bodySpriteRenders: []
   detect: {fileID: 1987647142}
   maxSpeed: 100
   rotationSpeed: 1000
@@ -7263,92 +7341,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1578487340
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1578487341}
-  - component: {fileID: 1578487342}
-  m_Layer: 0
-  m_Name: Circle
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1578487341
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1578487340}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 523390489}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &1578487342
-SpriteRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1578487340}
-  m_Enabled: 1
-  m_CastShadows: 0
-  m_ReceiveShadows: 0
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 0
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 0
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
-  m_FlipY: 0
-  m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
-  m_AdaptiveModeThreshold: 0.5
-  m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
 --- !u!1 &1840779241
 GameObject:
   m_ObjectHideFlags: 0

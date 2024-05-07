@@ -13,11 +13,11 @@ namespace Units.SubPrefabs.Weapons.WeaponBullets
         }
 
         public override void Init(Vector3 position, Vector3 forward, Quaternion degree, 
-            float speed, float damage, float recycleTime,
+            Vector3 speed, float damage, float recycleTime,
             bool penetrating)
         {
             base.Init(position, forward, degree, speed, damage, recycleTime, penetrating);
-            Speed = Vector3.right * speed;
+            Speed = speed;
             transform.rotation = degree;
         }
     }

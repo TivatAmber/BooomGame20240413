@@ -86,7 +86,7 @@ namespace Units.SubPrefabs.Weapons
                 #endregion
                 Missile missile = Get();
                 missile.Init(transform.position, entity.Forward, entity.transform.rotation, 
-                    bulletSpeed, bulletDamage, bulletRecycleTime,
+                    bulletSpeed * entity.Forward + entity.NowSpeed, bulletDamage, bulletRecycleTime,
                     penetrating);
                 missile.SetAttackRadius(attackRadius);
             }
@@ -116,6 +116,7 @@ namespace Units.SubPrefabs.Weapons
             _loading = false;
             _nowLoadingTime = 0f;
             loadingBar.fillAmount = 0f;
+            magazineText.SetText("Magazine: " + _magazine);
         }
 
         #endregion

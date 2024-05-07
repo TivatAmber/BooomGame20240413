@@ -91,7 +91,7 @@ namespace Units.SubPrefabs.Weapons
                     NowInterval = 0f;
                     break;
                 }
-                case LaserWeaponState.Loading when entity.energy < costOfEnergy:
+                case LaserWeaponState.Loading when entity.energy < costOfEnergy * Time.deltaTime:
                 {
                     ResetState();
                     return;
@@ -146,7 +146,7 @@ namespace Units.SubPrefabs.Weapons
                 _nowDamageInterval -= damageInterval;
                 Laser laser = Get(this);
                 laser.Init(transform.position, transform.right, transform.rotation, 
-                    bulletSpeed, bulletDamage, bulletRecycleTime, 
+                    bulletSpeed * Vector3.right, bulletDamage, bulletRecycleTime, 
                     penetrating);
             }
         }

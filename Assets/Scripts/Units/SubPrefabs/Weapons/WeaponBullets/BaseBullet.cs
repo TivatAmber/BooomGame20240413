@@ -16,11 +16,11 @@ namespace Units.SubPrefabs.Weapons.WeaponBullets
         }
 
         public virtual void Init(Vector3 position, Vector3 forward, Quaternion degree, 
-            float speed, float damage, float recycleTime,
+            Vector3 speed, float damage, float recycleTime,
             bool penetrating)
         {
             transform.position = position;
-            Speed = forward * speed;
+            Speed = speed;
             Damage = damage;
             RecycleTime = recycleTime;
             Penetrating = penetrating;

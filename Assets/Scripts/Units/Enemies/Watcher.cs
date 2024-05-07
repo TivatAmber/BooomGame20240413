@@ -34,6 +34,7 @@ namespace Units.Enemies
         [SerializeField] internal float selfDestructDamage;
         [SerializeField] internal bool canBroadcast;
         [SerializeField] internal float broadcastRadius;
+        [SerializeField] internal float boomingDelay;
         private bool _fallenDown;
         [SerializeField] private Entity _target;
 
@@ -129,12 +130,15 @@ namespace Units.Enemies
             selfDestructDamage = GlobalConfigure.Enemies.Watcher.SelfDestructDamage;
             canBroadcast = GlobalConfigure.Enemies.Watcher.CanBroadcast;
             broadcastRadius = GlobalConfigure.Enemies.Watcher.BroadcastRadius;
+            boomingDelay = GlobalConfigure.Enemies.Watcher.BoomingDelay;
             
             _transformModule ??= new TransformModule();
             _transformModule?.Init(this);
             _fallenDown = false;
+            canChangeRotationByPlanet = true;
+            canChangeTransform = true;
             
-            StartCoroutine(InitAnimation(GlobalConfigure.Enemies.Collector.InitAnimationWaitTime));
+            StartCoroutine(InitAnimation(GlobalConfigure.Enemies.Watcher.InitAnimationWaitTime));
         }
         protected override IEnumerator InitAnimation(float waitTime = 1f)
         {
@@ -187,11 +191,11 @@ namespace Units.Enemies
                     _animator.Play("Idle");
                     break;
                 }
-                case WatcherState.Chasing
+                case WatcherState.NearTarget
                     when Vector3.Distance(transform.position, _target.transform.position) < selfDestructRadius - selfDestructRadiusBias:
                 {
                     _nowState = WatcherState.Booming;
-                    died = true;
+                    StartCoroutine(Booming(boomingDelay));
                     break;
                 }
                 case WatcherState.Sleeping when _target is not null:
@@ -215,7 +219,7 @@ namespace Units.Enemies
                     _animator.Play("Booming");
                     break;
                 }
-                case WatcherState.Booming
+                case WatcherState.NearTarget
                     when Vector3.Distance(transform.position, _target.transform.position) >= selfDestructRadius:
                 {
                     _nowState = WatcherState.Chasing;
@@ -231,11 +235,20 @@ namespace Units.Enemies
                 died = true;
             }
         }
+        
+        IEnumerator Booming(float waitTime = 1f)
+        {
+            canChangeTransform = false;
+            canChangeRotationByPlanet = false;
+            yield return new WaitForSeconds(waitTime);
+            died = true;
+        }
 
         protected override void EndLife()
         {
             GlobalLevelUp.AllDoneInfo.WatcherKilledAdd();
             GlobalConfigure.Instance.RecycleWatcher();
+            StopAllCoroutines();
             if (health <= 0)
             {
                 IEnumerable<Entity> nowEntities = GlobalConfigure.Manager.EntityManager.EnemyEntity

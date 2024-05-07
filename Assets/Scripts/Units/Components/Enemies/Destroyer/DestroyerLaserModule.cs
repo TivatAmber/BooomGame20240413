@@ -55,6 +55,7 @@ namespace Units.Components.Enemies
                 _nowState = DestroyerLaserState.Idle;
                 _loadingTime = 0f;
                 destroyer.laserAttacking = false;
+                destroyer.laserPreShoot.SetActive(false);
                 return;
             }
 
@@ -67,6 +68,7 @@ namespace Units.Components.Enemies
                 _nowState = DestroyerLaserState.Idle;
                 _loadingTime = 0f;
                 destroyer.laserAttacking = false;
+                destroyer.laserPreShoot.SetActive(false);
                 return;
             }
             
@@ -75,6 +77,7 @@ namespace Units.Components.Enemies
                 case DestroyerLaserState.Idle:
                 {
                     _nowState = DestroyerLaserState.Preparing;
+                    destroyer.laserPreShoot.SetActive(true);
                     destroyer.laserAttacking = true;
                     _loadingTime = 0f;
                     break;
@@ -83,6 +86,7 @@ namespace Units.Components.Enemies
                 {
                     _nowState = DestroyerLaserState.Attacking;
                     destroyer.laserAttacking = true;
+                    destroyer.laserPreShoot.SetActive(false);
                     _loadingTime = 0f;
                     _attackTime = 0f;
                     break;
@@ -109,7 +113,7 @@ namespace Units.Components.Enemies
                     _nowInterval -= destroyer.laserAttackInterval;
                     DestroyerLaser laser = Get(this);
                     laser.Init(transform.position, transform.right, transform.rotation, 
-                        destroyer.laserSpeed, destroyer.laserDamage, destroyer.laserRecycleTime, 
+                        destroyer.laserSpeed * Vector3.right, destroyer.laserDamage, destroyer.laserRecycleTime, 
                         destroyer.laserPenetrating);
                 }
 

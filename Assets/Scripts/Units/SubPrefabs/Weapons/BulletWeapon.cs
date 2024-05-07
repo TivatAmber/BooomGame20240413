@@ -51,7 +51,7 @@ namespace Units.SubPrefabs.Weapons
                 entity.energy -= costOfEnergy;
                 Bullet bullet = Get();
                 bullet.Init(transform.position, entity.Forward, entity.transform.rotation, 
-                    bulletSpeed, bulletDamage, bulletRecycleTime,
+                    bulletSpeed * entity.Forward + entity.NowSpeed, bulletDamage, bulletRecycleTime,
                     penetrating);
             }
         }
@@ -67,7 +67,7 @@ namespace Units.SubPrefabs.Weapons
                 Quaternion degree = randomAng * entity.transform.rotation;
                 Vector3 forward = randomAng * entity.Forward;
                 bullet.Init(transform.position, forward, degree, 
-                    bulletSpeed, bulletDamage, bulletRecycleTime, 
+                    bulletSpeed * entity.Forward + entity.NowSpeed, bulletDamage, bulletRecycleTime, 
                     penetrating);
             }
         }

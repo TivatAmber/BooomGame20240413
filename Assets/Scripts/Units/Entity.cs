@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using GlobalSystem;
 using UnityEngine;
 using Units.Components;
@@ -16,7 +17,7 @@ namespace Units
         
         #region Body
         [Header("Body")] 
-        [SerializeField] private GameObject body;
+        [SerializeField] private List<SpriteRenderer> bodySpriteRenders;
         [SerializeField] private GameObject detect;
         #endregion
         
@@ -75,7 +76,11 @@ namespace Units
 
         public void ChangeActive()
         {
-            body.SetActive(canBeSee);
+            // body.SetActive(canBeSee);
+            foreach (var bodyRender in bodySpriteRenders)
+            {
+                bodyRender.enabled = canBeSee;
+            }
             detect.SetActive(!canBeSee);
         }
 

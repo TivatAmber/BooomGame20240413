@@ -43,6 +43,7 @@ namespace Units.Enemies
         [SerializeField] internal float laserRecycleTime;
         [SerializeField] internal bool laserPenetrating;
         [SerializeField] internal float laserAttackInterval;
+        [SerializeField] internal GameObject laserPreShoot;
         #endregion
         [SerializeField] internal bool canBroadcast;
         [SerializeField] internal float broadcastRadius;

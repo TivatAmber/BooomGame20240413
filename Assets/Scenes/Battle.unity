@@ -194,7 +194,7 @@ MonoBehaviour:
   collectorSummonWatcherDistance: 5
   collectorInitAnimationWaitTime: 1
   watcherPrefab: {fileID: 6082493619386131883, guid: df58ac4af0f414aaa8db31253780335b, type: 3}
-  watcherLimit: 0
+  watcherLimit: 10
   watcherHealth: 1
   watcherMaxSpeed: 30
   watcherRotationSpeed: 1000
@@ -226,8 +226,8 @@ MonoBehaviour:
   destroyerFollowingRadius: 10
   destroyerFollowingAccelerate: -15
   destroyerLaserRadius: 15
-  destroyerLaserPrepareTime: 0.1
-  destroyerLaserAttackTime: 0.05
+  destroyerLaserPrepareTime: 0.4
+  destroyerLaserAttackTime: 0.1
   destroyerLaserRotationSpeed: 10
   destroyerLaserAccelerate: 10
   destroyLaserDamage: 0

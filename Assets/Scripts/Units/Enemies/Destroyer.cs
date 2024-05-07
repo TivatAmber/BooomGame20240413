@@ -31,6 +31,8 @@ namespace Units.Enemies
         [SerializeField] internal float searchRadius;
         [SerializeField] internal float followingRadius;
         #region Laser
+
+        [SerializeField] internal bool laserAttacking;
         [SerializeField] internal float laserRadius;
         [SerializeField] internal float laserPrepareTime;
         [SerializeField] internal float laserAttackTime;

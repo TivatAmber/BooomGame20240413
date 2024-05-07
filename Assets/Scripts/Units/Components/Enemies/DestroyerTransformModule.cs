@@ -40,10 +40,13 @@ namespace Units.Components.Enemies
 
         private void ChangeRotationByTarget(Destroyer entity)
         {
-            Vector3 relativePosition = (entity.SearchTarget.transform.position - entity.transform.position)
+            Vector3 relativeForward = (entity.SearchTarget.transform.position - entity.transform.position)
                 .normalized;
-            float delta = Vector3.SignedAngle(entity.transform.right, relativePosition, Vector3.forward);
-            entity.transform.Rotate(0, 0, delta);
+            float speed = Mathf.Sign(Vector3.Dot(entity.transform.up, relativeForward));
+            speed = entity.laserAttacking ? speed * entity.laserRotationSpeed : speed * entity.rotationSpeed;
+            float delta = Vector3.SignedAngle(entity.transform.right, relativeForward, Vector3.forward);
+            
+            entity.transform.Rotate(0, 0, Tools.GetCloseToZero(delta, speed));
         }
     }
 }

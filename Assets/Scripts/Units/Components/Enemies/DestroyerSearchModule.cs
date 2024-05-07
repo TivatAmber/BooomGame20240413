@@ -29,6 +29,8 @@ namespace Units.Components.Enemies
             }
             if (entity.NowState is Destroyer.DestroyerState.Following)
                 entity.NowForce += SumForce.normalized * entity.followingAccelerate;
+            else if (entity.laserAttacking)
+                entity.NowForce += SumForce.normalized * entity.laserAccelerate;
             else
                 entity.NowForce += SumForce.normalized * entity.accelerate;
         }

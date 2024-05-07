@@ -54,6 +54,7 @@ namespace Units.Components.Enemies
             {
                 _nowState = DestroyerLaserState.Idle;
                 _loadingTime = 0f;
+                destroyer.laserAttacking = false;
                 return;
             }
 
@@ -65,6 +66,7 @@ namespace Units.Components.Enemies
             {
                 _nowState = DestroyerLaserState.Idle;
                 _loadingTime = 0f;
+                destroyer.laserAttacking = false;
                 return;
             }
             
@@ -73,18 +75,22 @@ namespace Units.Components.Enemies
                 case DestroyerLaserState.Idle:
                 {
                     _nowState = DestroyerLaserState.Preparing;
+                    destroyer.laserAttacking = true;
                     _loadingTime = 0f;
                     break;
                 }
                 case DestroyerLaserState.Preparing when _loadingTime > destroyer.laserPrepareTime:
                 {
                     _nowState = DestroyerLaserState.Attacking;
+                    destroyer.laserAttacking = true;
                     _loadingTime = 0f;
+                    _attackTime = 0f;
                     break;
                 }
                 case DestroyerLaserState.Attacking when _attackTime > destroyer.laserAttackTime:
                 {
                     _nowState = DestroyerLaserState.Idle;
+                    destroyer.laserAttacking = false;
                     _attackTime = 0f;
                     break;
                 }

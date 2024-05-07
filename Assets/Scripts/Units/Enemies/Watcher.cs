@@ -24,9 +24,8 @@ namespace Units.Enemies
 
         #region WatcherConfigure
 
-        [Header("WatcherConfigure")] [SerializeField]
-        internal float costOfEnergy;
-
+        [Header("WatcherConfigure")]
+        [SerializeField] internal float costOfEnergy;
         [SerializeField] private Animator _animator;
         [SerializeField] internal float searchRadius;
         [SerializeField] internal float accelerate;
@@ -61,6 +60,7 @@ namespace Units.Enemies
         {
             Idle,
             Chasing,
+            NearTarget,
             Booming,
             Sleeping
         }
@@ -206,6 +206,20 @@ namespace Units.Enemies
                     EnterOrbit();
                     _nowState = WatcherState.Idle;
                     _animator.Play("Idle");
+                    break;
+                }
+                case WatcherState.Chasing
+                    when Vector3.Distance(transform.position, _target.transform.position) < selfDestructRadius:
+                {
+                    _nowState = WatcherState.NearTarget;
+                    _animator.Play("Booming");
+                    break;
+                }
+                case WatcherState.Booming
+                    when Vector3.Distance(transform.position, _target.transform.position) >= selfDestructRadius:
+                {
+                    _nowState = WatcherState.Chasing;
+                    _animator.Play("Chasing");
                     break;
                 }
             }

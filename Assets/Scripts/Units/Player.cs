@@ -3,6 +3,7 @@ using TMPro;
 using Units.Components;
 using Units.SubPrefabs;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Units
@@ -89,6 +90,7 @@ namespace Units
         }
         private void Update()
         {
+            if (died) EndLife();
             NowForce = Vector3.zero;
             _inputModule.Update(this);
             _distanceModule.Update(this);
@@ -137,5 +139,11 @@ namespace Units
         }
 
         #endregion
+
+        protected override void EndLife()
+        {
+            base.EndLife();
+            SceneManager.LoadScene(2);
+        }
     }
 }

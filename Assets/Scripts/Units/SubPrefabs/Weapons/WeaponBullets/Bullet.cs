@@ -17,8 +17,9 @@ namespace Units.SubPrefabs.Weapons.WeaponBullets
             bool penetrating)
         {
             base.Init(position, forward, degree, speed, damage, recycleTime, penetrating);
-            Speed = speed;
-            transform.rotation = degree;
+            Speed = degree * speed;
+            transform.Rotate(0, 0,
+                Vector3.SignedAngle(transform.right, Speed.normalized, Vector3.forward));
         }
     }
 }

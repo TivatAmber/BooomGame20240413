@@ -15,6 +15,8 @@ namespace Units.SubPrefabs.Weapons
         [SerializeField] private float releaseTime;
         [SerializeField] private float viewFieldEffectByDeg;
         [SerializeField] private Image loadingBar;
+        [SerializeField] private SpriteRenderer loadingImg;
+        [SerializeField] private Animator _animator;
         private float _nowDamageInterval;
         private float _nowLoadingTime;
         
@@ -57,6 +59,7 @@ namespace Units.SubPrefabs.Weapons
         {
             base.Start();
             _nowDamageInterval = 0f;
+            loadingImg.enabled = false;
         }
 
         private void Update()
@@ -89,6 +92,8 @@ namespace Units.SubPrefabs.Weapons
                     _nowState = LaserWeaponState.Loading;
                     _nowLoadingTime = 0f;
                     NowInterval = 0f;
+                    loadingImg.enabled = true;
+                    _animator.Play("LaserLoading");
                     break;
                 }
                 case LaserWeaponState.Loading when entity.energy < costOfEnergy * Time.deltaTime:
@@ -115,6 +120,7 @@ namespace Units.SubPrefabs.Weapons
         {
             _nowState = LaserWeaponState.Idle;
             NowInterval = 0f;
+            loadingImg.enabled = false;
         }
         #endregion
         #region AttackFunctions

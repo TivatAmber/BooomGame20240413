@@ -64,7 +64,7 @@ namespace Units.SubPrefabs.Weapons
                 entity.energy -= costOfEnergy;
                 Bullet bullet = Get();
                 Quaternion randomAng = Quaternion.Euler(0, 0, Random.Range(-scatterAngle, scatterAngle));
-                Quaternion degree = randomAng * entity.transform.rotation;
+                Quaternion degree = randomAng;
                 Vector3 forward = randomAng * entity.Forward;
                 bullet.Init(transform.position, forward, degree, 
                     bulletSpeed * entity.Forward + entity.NowSpeed, bulletDamage, bulletRecycleTime, 
